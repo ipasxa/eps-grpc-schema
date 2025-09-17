@@ -1,8 +1,13 @@
+---
 name: Lint
 
-on:  # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
+'on':
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   run-linters:
@@ -12,11 +17,19 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v5
-        with:
-          fetch: 0
-          persisist-credentials: false
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v8.1.0
+      - name: Lint YAML
+        uses: karancode/yamllint-github-action@v2.1.1
+
+      - name: Setup Protolint
+        # yamllint disable rule:line-length
+        run: |
+          wget --quiet https://github.com/yoheimuta/protolint/releases/download/v${PROTOLINT_VERSION}/protolint_${PROTOLINT_VERSION}_linux_amd64.tar.gz \
+            && tar xf protolint_${PROTOLINT_VERSION}_linux_amd64.tar.gz \
+            && chmod +x protolint \
+            && mv protolint /usr/local/bin/protolint
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROTOLINT_VERSION: 0.56.4
+
+      - name: Lint Protobuf
+        run: protolint .
