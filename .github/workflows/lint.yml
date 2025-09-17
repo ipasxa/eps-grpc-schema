@@ -1,0 +1,22 @@
+name: Lint
+
+on:  # yamllint disable-line rule:truthy
+  push: null
+  pull_request: null
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v5
+        with:
+          fetch: 0
+          persisist-credentials: false
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v8.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
