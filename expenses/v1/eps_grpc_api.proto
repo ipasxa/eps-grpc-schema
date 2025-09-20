@@ -4,35 +4,36 @@ package expenses.v1;
 
 import "google/type/money.proto";
 
+option go_package = "github.com/ipasxa/eps-grpc-schema/expenses/v1";
+
+message ExpenseInstance {
+  int64 id = 1;
+  string date = 2; // ISO 8601
+}
+
+message Periodicity {
+  PeriodicityType type = 1;
+  int32 frequency = 2;
+}
+
+enum PeriodicityType {
+  PERIODICITY_TYPE_DAY_UNSPECIFIED = 0;
+  PERIODICITY_TYPE_DAY_OF_WEEK = 1;
+  PERIODICITY_TYPE_WEEK = 2;
+  PERIODICITY_TYPE_MONTH = 3;
+  PERIODICITY_TYPE_QUARTER = 4;
+  PERIODICITY_TYPE_HALF_A_YEAR = 5;
+  PERIODICITY_TYPE_YEAR = 6;
+}
+
 message PlanExpenseResponse {
-
-  message Instance {
-    int64 id = 1;
-    string date = 2; // ISO 8601
-  }
-
-  message Periodicity {
-    PeriodicityType type = 1;
-    int32 frequency = 2;
-  }
-
-  enum PeriodicityType {
-    PERIODICITY_TYPE_DAY_UNSPECIFIED = 0;
-    PERIODICITY_TYPE_DAY_OF_WEEK = 1;
-    PERIODICITY_TYPE_WEEK = 2;
-    PERIODICITY_TYPE_MONTH = 3;
-    PERIODICITY_TYPE_QUARTER = 4;
-    PERIODICITY_TYPE_HALF_A_YEAR = 5;
-    PERIODICITY_TYPE_YEAR = 6;
-  }
-
   int64 id = 1;
   string name = 2;
   string start_date = 3; // ISO 8601
   string end_date = 4; // ISO 8601
   google.type.Money amount = 5;
   Periodicity periodicity = 6 [features.field_presence = EXPLICIT];
-  repeated Instance instances = 7;
+  repeated ExpenseInstance instances = 7;
 }
 
 message PlanExpenseRequest {
